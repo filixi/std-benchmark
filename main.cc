@@ -2,14 +2,15 @@
 #include <chrono>
 #include <condition_variable>
 #include <mutex>
+#include <thread>
 
 #include <pthread.h>
 #include <time.h>
 
 #include <benchmark/benchmark.h>
 
-// condition variable wait for 0 seconds
-static void bm_std_cv_wait_for_0nanaoseconds(benchmark::State& state) {
+// condition variable wait for 1 nanosecond
+static void bm_std_cv_wait_for_1nanosecond(benchmark::State& state) {
   std::condition_variable cv;
   std::mutex mtx;
   std::unique_lock lock(mtx, std::defer_lock);
@@ -20,12 +21,12 @@ static void bm_std_cv_wait_for_0nanaoseconds(benchmark::State& state) {
     lock.unlock();
   }
 }
-BENCHMARK(bm_std_cv_wait_for_0nanaoseconds);
+BENCHMARK(bm_std_cv_wait_for_1nanosecond);
 
-static void bm_pthread_cv_wait_for_0nanaoseconds(benchmark::State& state) {
+static void bm_pthread_cv_wait_for_1nanosecond(benchmark::State& state) {
   pthread_cond_t cv = PTHREAD_COND_INITIALIZER;
   pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
-  timespec abstime{};
+  timespec abstime = {.tv_sec = 0, .tv_nsec = 1};
 
   while (state.KeepRunning()) {
     abstime.tv_sec = time(NULL);
@@ -34,7 +35,7 @@ static void bm_pthread_cv_wait_for_0nanaoseconds(benchmark::State& state) {
     pthread_mutex_unlock(&mtx);
   }
 }
-BENCHMARK(bm_pthread_cv_wait_for_0nanaoseconds);
+BENCHMARK(bm_pthread_cv_wait_for_1nanosecond);
 
 // mutex lock/unlock
 static void bm_std_mutex_lock_unlock(benchmark::State& state) {
@@ -56,5 +57,22 @@ static void bm_pthread_mutex_lock_unlock(benchmark::State& state) {
   }
 }
 BENCHMARK(bm_pthread_mutex_lock_unlock);
+
+// sleep for 1 nano second
+static void bm_std_sleep_for_1nanosecond(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    std::this_thread::sleep_for(std::chrono::nanoseconds(1));
+  }
+}
+BENCHMARK(bm_std_sleep_for_1nanosecond);
+
+static void bm_pthread_sleep_for_1nanosecond(benchmark::State& state) {
+  timespec reltime{0, 1};
+
+  while (state.KeepRunning()) {
+    nanosleep(&reltime, nullptr);
+  }
+}
+BENCHMARK(bm_pthread_sleep_for_1nanosecond);
 
 BENCHMARK_MAIN();
