@@ -17,7 +17,7 @@ static void bm_std_cv_wait_for_1nanosecond(benchmark::State& state) {
 
   while (state.KeepRunning()) {
     lock.lock();
-    cv.wait_for(lock, std::chrono::nanoseconds(0));
+    cv.wait_for(lock, std::chrono::nanoseconds(1));
     lock.unlock();
   }
 }
@@ -59,6 +59,7 @@ static void bm_pthread_mutex_lock_unlock(benchmark::State& state) {
 BENCHMARK(bm_pthread_mutex_lock_unlock);
 
 // sleep for 1 nano second
+// Note : sleep for 0 nano second with sleep_for will be optimized away.
 static void bm_std_sleep_for_1nanosecond(benchmark::State& state) {
   while (state.KeepRunning()) {
     std::this_thread::sleep_for(std::chrono::nanoseconds(1));
