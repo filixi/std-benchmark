@@ -1,0 +1,9 @@
+Run on (8 X 3500 MHz CPU s)
+2017-09-19 12:19:52
+----------------------------------------------------------------------------
+Benchmark                                     Time           CPU Iterations
+----------------------------------------------------------------------------
+bm_std_cv_wait_for_0nanaoseconds          51757 ns       1434 ns     100000
+bm_pthread_cv_wait_for_0nanaoseconds       2579 ns       1359 ns     518109
+bm_std_mutex_lock_unlock                     16 ns         16 ns   42270995
+bm_pthread_mutex_lock_unlock                 18 ns         18 ns   39864284

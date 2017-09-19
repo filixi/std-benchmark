@@ -11,4 +11,4 @@ main:
 	$(CC) $(FLAG) main.cc $(INCLUDE) $(LIB_PATH) $(LIB)
 
 run:
-	./a.out --benchmark_out=README.MD --benchmark_out_format=console
+	./a.out --benchmark_out=result --benchmark_out_format=console
