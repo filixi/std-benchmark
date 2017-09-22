@@ -1,6 +1,6 @@
 CC = g++
 
-FLAG = -std=c++17 -O4
+FLAG = -std=c++17
 
 INCLUDE = -I ~/work/benchmark/include # include path of google's benchmark tool
 LIB_PATH = -L ~/work/benchmark/build/src # lib path of benchmark tool
